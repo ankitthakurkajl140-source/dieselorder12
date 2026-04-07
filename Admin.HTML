@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — Singh Diesel Pump</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#e65c00;--primary-dark:#c44f00;--dark:#1a1a1a;--bg:#f0f0eb;--white:#fff;--border:#ddd;--success:#1a7a3a;--success-bg:#eafaf1;--text:#2d2d2d;--muted:#666;--yellow:#fbbf24;--blue:#1d4ed8;--blue-bg:#dbeafe;--red:#dc2626;--red-bg:#fee2e2;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Noto Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* FULL PAGE SCREENS */
+.screen{display:none;min-height:100vh;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#1a1a1a,#3d2000);}
+.screen.active{display:flex;}
+.card{background:white;border-radius:20px;padding:38px 34px;width:100%;max-width:400px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.card-icon{font-size:3.2rem;margin-bottom:14px;}
+.card h2{font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;color:var(--dark);margin-bottom:4px;}
+.card p{font-size:.82rem;color:var(--muted);margin-bottom:24px;}
+.card input{width:100%;padding:13px 16px;border:2px solid var(--border);border-radius:10px;font-family:'Noto Sans',sans-serif;font-size:.95rem;outline:none;margin-bottom:12px;transition:border-color .2s;}
+.card input:focus{border-color:var(--primary);}
+.card input::placeholder{color:#aaa;}
+.big-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;border:none;border-radius:10px;font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 14px rgba(230,92,0,.35);}
+.big-btn:hover{transform:translateY(-2px);}
+.big-btn.grey{background:#6b7280;box-shadow:none;}
+.big-btn.grey:hover{background:#4b5563;}
+.err-msg{color:var(--red);font-size:.8rem;margin-top:-6px;margin-bottom:10px;display:none;}
+.link-btn{background:none;border:none;color:var(--primary);font-size:.82rem;font-weight:700;cursor:pointer;text-decoration:underline;margin-top:12px;display:block;width:100%;text-align:center;}
+.link-btn:hover{color:var(--primary-dark);}
+.divider{border:none;border-top:1px solid var(--border);margin:16px 0;}
+.success-msg{background:#dcfce7;border:1.5px solid #86efac;border-radius:10px;padding:12px;font-size:.83rem;color:#14532d;font-weight:700;margin-bottom:14px;display:none;}
+
+/* ADMIN LAYOUT */
+.admin-wrap{display:none;}
+.layout{display:flex;min-height:100vh;}
+.sidebar{width:240px;flex-shrink:0;background:var(--dark);color:white;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:50;overflow-y:auto;}
+.sidebar-brand{padding:20px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px;}
+.sb-ico{width:40px;height:40px;background:var(--primary);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;}
+.sb-name{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;line-height:1.2;}
+.sb-name small{display:block;font-size:.63rem;opacity:.6;font-family:'Noto Sans',sans-serif;font-weight:400;}
+.sidebar-nav{flex:1;padding:14px 12px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;font-size:.87rem;font-weight:600;color:rgba(255,255,255,.65);cursor:pointer;margin-bottom:4px;transition:all .18s;border:none;background:none;width:100%;text-align:left;}
+.nav-item:hover{background:rgba(255,255,255,.07);color:white;}
+.nav-item.active{background:var(--primary);color:white;}
+.nbadge{margin-left:auto;background:var(--yellow);color:var(--dark);border-radius:99px;padding:2px 8px;font-size:.7rem;font-weight:800;}
+.sidebar-footer{padding:14px;border-top:1px solid rgba(255,255,255,.08);}
+.logout-btn{width:100%;padding:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.7);border-radius:8px;font-family:'Noto Sans',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.logout-btn:hover{background:rgba(220,38,38,.2);color:white;}
+.content{margin-left:240px;flex:1;padding:26px;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px;}
+.page-title{font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;color:var(--dark);}
+.refresh-btn{padding:9px 16px;border:2px solid var(--border);background:white;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--dark);transition:all .2s;display:flex;align-items:center;gap:6px;}
+.refresh-btn:hover{border-color:var(--primary);color:var(--primary);}
+.live-dot{width:10px;height:10px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite;display:inline-block;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.stat-card{background:white;border-radius:14px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,.07);border-left:4px solid transparent;}
+.stat-card.or{border-left-color:var(--primary);}
+.stat-card.ye{border-left-color:#f59e0b;}
+.stat-card.gr{border-left-color:var(--success);}
+.stat-card.bl{border-left-color:var(--blue);}
+.stat-val{font-family:'Baloo 2',cursive;font-size:1.9rem;font-weight:800;line-height:1;margin-bottom:4px;}
+.stat-card.or .stat-val{color:var(--primary);}
+.stat-card.ye .stat-val{color:#d97706;}
+.stat-card.gr .stat-val{color:var(--success);}
+.stat-card.bl .stat-val{color:var(--blue);}
+.stat-lbl{font-size:.73rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+.controls{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.filter-chip{padding:7px 16px;border-radius:99px;border:2px solid var(--border);background:white;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.filter-chip.active{background:var(--primary);color:white;border-color:var(--primary);}
+.search-box{margin-left:auto;padding:8px 14px;border:2px solid var(--border);border-radius:8px;font-family:'Noto Sans',sans-serif;font-size:.85rem;outline:none;width:200px;transition:border-color .2s;}
+.search-box:focus{border-color:var(--primary);}
+.orders-list{display:flex;flex-direction:column;gap:14px;}
+.ocard{background:white;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.07);border-left:5px solid #ddd;transition:box-shadow .2s;}
+.ocard:hover{box-shadow:0 6px 24px rgba(0,0,0,.12);}
+.ocard.pending{border-left-color:#f59e0b;}
+.ocard.confirmed{border-left-color:var(--blue);}
+.ocard.delivered{border-left-color:var(--success);}
+.ocard.cancelled{border-left-color:var(--red);}
+.ocard-head{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:#fafafa;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px;}
+.onum{font-family:'Baloo 2',cursive;font-weight:800;font-size:1rem;color:var(--dark);}
+.otime{font-size:.73rem;color:var(--muted);}
+.sbadge{padding:4px 12px;border-radius:99px;font-size:.71rem;font-weight:700;}
+.sbadge.pending{background:#fef3c7;color:#92400e;}
+.sbadge.confirmed{background:var(--blue-bg);color:var(--blue);}
+.sbadge.delivered{background:var(--success-bg);color:var(--success);}
+.sbadge.cancelled{background:var(--red-bg);color:var(--red);}
+.ocard-body{padding:14px 18px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px 18px;}
+.ofield .flbl{font-size:.69rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;}
+.ofield .fval{font-size:.86rem;font-weight:600;color:var(--dark);}
+.ofield.big .fval{font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800;color:var(--primary);}
+.ofield.full{grid-column:1/-1;}
+.cash-tag{display:inline-block;background:#dcfce7;color:#14532d;border-radius:99px;padding:2px 10px;font-size:.72rem;font-weight:700;}
+.ocard-foot{display:flex;gap:8px;padding:11px 18px;background:#fafafa;border-top:1px solid var(--border);flex-wrap:wrap;}
+.abtn{padding:8px 14px;border-radius:8px;font-size:.78rem;font-weight:700;cursor:pointer;border:none;transition:all .15s;font-family:'Noto Sans',sans-serif;display:inline-flex;align-items:center;gap:5px;text-decoration:none;}
+.abtn-confirm{background:var(--blue-bg);color:var(--blue);}
+.abtn-confirm:hover{background:var(--blue);color:white;}
+.abtn-deliver{background:var(--success-bg);color:var(--success);}
+.abtn-deliver:hover{background:var(--success);color:white;}
+.abtn-cancel{background:var(--red-bg);color:var(--red);}
+.abtn-cancel:hover{background:var(--red);color:white;}
+.abtn-wa{background:#d1fae5;color:#065f46;}
+.abtn-wa:hover{background:#25d366;color:white;}
+.abtn-call{background:#f3f4f6;color:var(--dark);}
+.abtn-call:hover{background:var(--dark);color:white;}
+.abtn-map{background:#dbeafe;color:#1d4ed8;}
+.abtn-map:hover{background:#1d4ed8;color:white;}
+.empty{text-align:center;padding:60px 20px;color:var(--muted);}
+.empty .eicon{font-size:3rem;margin-bottom:12px;}
+.mobile-toggle{display:none;position:fixed;top:14px;left:14px;z-index:200;background:var(--dark);color:white;border:none;border-radius:8px;padding:8px 12px;font-size:1.2rem;cursor:pointer;}
+
+/* SETTINGS */
+.settings-card{background:white;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:16px;}
+.settings-card h3{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--dark);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.settings-card input{width:100%;padding:11px 14px;border:2px solid var(--border);border-radius:10px;font-family:'Noto Sans',sans-serif;font-size:.92rem;outline:none;margin-bottom:10px;transition:border-color .2s;}
+.settings-card input:focus{border-color:var(--primary);}
+.save-btn{padding:11px 24px;background:var(--primary);color:white;border:none;border-radius:10px;font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;}
+.save-btn:hover{background:var(--primary-dark);}
+
+@media(max-width:800px){
+  .sidebar{transform:translateX(-100%);transition:transform .3s;}
+  .sidebar.open{transform:translateX(0);}
+  .content{margin-left:0;padding:16px;padding-top:56px;}
+  .mobile-toggle{display:block;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .ocard-body{grid-template-columns:1fr 1fr;}
+  .search-box{width:100%;margin-left:0;}
+}
+</style>
+</head>
+<body>
+
+<!-- SCREEN 1: FIRST TIME SETUP (agar pehli baar khol rahe ho) -->
+<div class="screen active" id="setupScreen">
+  <div class="card">
+    <div class="card-icon">⛽</div>
+    <h2>Admin Setup</h2>
+    <p>Pehli baar? Apna User ID aur Password banao</p>
+    <input type="text" id="setupId" placeholder="Apna User ID banao (jaise: singh2024)" />
+    <input type="password" id="setupPw" placeholder="Password banao (min 4 characters)" />
+    <input type="password" id="setupPw2" placeholder="Password dobara likhho (confirm)" />
+    <div class="err-msg" id="setupErr"></div>
+    <button class="big-btn" onclick="doSetup()">✅ Account Banao</button>
+    <hr class="divider">
+    <p style="font-size:.78rem;color:var(--muted)">Pehle se account hai?</p>
+    <button class="link-btn" onclick="showLogin()">🔐 Login Karo</button>
+  </div>
+</div>
+
+<!-- SCREEN 2: LOGIN -->
+<div class="screen" id="loginScreen">
+  <div class="card">
+    <div class="card-icon">🔐</div>
+    <h2>Admin Login</h2>
+    <p>Singh Diesel Pump — Owner Access Only</p>
+    <div class="success-msg" id="loginSuccess"></div>
+    <input type="text" id="loginId" placeholder="User ID" onkeydown="if(event.key==='Enter')doLogin()" />
+    <input type="password" id="loginPw" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()" />
+    <div class="err-msg" id="loginErr">❌ Galat User ID ya Password!</div>
+    <button class="big-btn" onclick="doLogin()">🔓 Login Karo</button>
+    <button class="link-btn" onclick="showForgot()">🔑 Password bhool gaye?</button>
+  </div>
+</div>
+
+<!-- SCREEN 3: FORGOT PASSWORD -->
+<div class="screen" id="forgotScreen">
+  <div class="card">
+    <div class="card-icon">🔑</div>
+    <h2>Password Reset Karo</h2>
+    <p>Apna User ID daalo aur naya password set karo</p>
+    <input type="text" id="forgotId" placeholder="Apna User ID likhho" />
+    <input type="password" id="newPw" placeholder="Naya Password" />
+    <input type="password" id="newPw2" placeholder="Naya Password confirm karo" />
+    <div class="err-msg" id="forgotErr"></div>
+    <button class="big-btn" onclick="doReset()">🔄 Password Reset Karo</button>
+    <button class="link-btn" onclick="showLogin()">← Wapas Login pe</button>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="admin-wrap" id="adminWrap">
+  <button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+  <div class="layout">
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="sb-ico">⛽</div>
+        <div class="sb-name">Singh Diesel<small>Admin Panel</small></div>
+      </div>
+      <div class="sidebar-nav">
+        <button class="nav-item active" onclick="showSec('orders',this)">📋 All Orders <span class="nbadge" id="pendingBadge" style="display:none">0</span></button>
+        <button class="nav-item" onclick="showSec('today',this)">📅 Aaj Ke Orders</button>
+        <button class="nav-item" onclick="showSec('delivered',this)">✅ Delivered</button>
+        <button class="nav-item" onclick="showSec('stats',this)">📊 Summary</button>
+        <button class="nav-item" onclick="showSec('settings',this)">⚙️ Settings</button>
+      </div>
+      <div class="sidebar-footer">
+        <div style="font-size:.7rem;color:rgba(255,255,255,.4);text-align:center;margin-bottom:8px"><span class="live-dot"></span> Live · Auto-refresh 15s</div>
+        <button class="logout-btn" onclick="doLogout()">🚪 Logout</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ALL ORDERS -->
+      <div id="sec-orders">
+        <div class="topbar">
+          <div class="page-title">📋 Saare Orders</div>
+          <button class="refresh-btn" onclick="renderOrders()">🔄 Refresh</button>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card or"><div class="stat-val" id="stTotal">0</div><div class="stat-lbl">Total Orders</div></div>
+          <div class="stat-card ye"><div class="stat-val" id="stPending">0</div><div class="stat-lbl">⏳ Pending</div></div>
+          <div class="stat-card gr"><div class="stat-val" id="stDelivered">0</div><div class="stat-lbl">🚚 Delivered</div></div>
+          <div class="stat-card bl"><div class="stat-val" id="stLiters">0</div><div class="stat-lbl">⛽ Total Liters</div></div>
+        </div>
+        <div class="controls">
+          <div class="filter-chip active" onclick="setFilter('all',this)">Sab</div>
+          <div class="filter-chip" onclick="setFilter('pending',this)">⏳ Pending</div>
+          <div class="filter-chip" onclick="setFilter('confirmed',this)">✅ Confirmed</div>
+          <div class="filter-chip" onclick="setFilter('delivered',this)">🚚 Delivered</div>
+          <div class="filter-chip" onclick="setFilter('cancelled',this)">❌ Cancelled</div>
+          <input class="search-box" type="text" id="searchBox" placeholder="🔍 Naam ya company..." oninput="renderOrders()" />
+        </div>
+        <div class="orders-list" id="ordersList"></div>
+      </div>
+
+      <!-- TODAY -->
+      <div id="sec-today" style="display:none">
+        <div class="topbar"><div class="page-title">📅 Aaj Ke Orders</div></div>
+        <div class="orders-list" id="todayList"></div>
+      </div>
+
+      <!-- DELIVERED -->
+      <div id="sec-delivered" style="display:none">
+        <div class="topbar"><div class="page-title">✅ Delivered Orders</div></div>
+        <div class="orders-list" id="deliveredList"></div>
+      </div>
+
+      <!-- STATS -->
+      <div id="sec-stats" style="display:none">
+        <div class="topbar"><div class="page-title">📊 Summary</div></div>
+        <div id="statsContent"></div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div id="sec-settings" style="display:none">
+        <div class="topbar"><div class="page-title">⚙️ Settings</div></div>
+
+        <div class="settings-card">
+          <h3>👤 User ID Badlo</h3>
+          <input type="text" id="newIdInput" placeholder="Naya User ID likhho" />
+          <div class="err-msg" id="idErr"></div>
+          <div class="success-msg" id="idSuccess"></div>
+          <button class="save-btn" onclick="changeId()">✅ User ID Update Karo</button>
+        </div>
+
+        <div class="settings-card">
+          <h3>🔑 Password Badlo</h3>
+          <input type="password" id="oldPwInput" placeholder="Purana Password" />
+          <input type="password" id="newPwInput" placeholder="Naya Password" />
+          <input type="password" id="newPw2Input" placeholder="Naya Password confirm karo" />
+          <div class="err-msg" id="pwErr"></div>
+          <div class="success-msg" id="pwSuccess"></div>
+          <button class="save-btn" onclick="changePw()">✅ Password Update Karo</button>
+        </div>
+
+        <div class="settings-card">
+          <h3>📞 Owner WhatsApp Number</h3>
+          <input type="tel" id="ownerPhoneInput" placeholder="91XXXXXXXXXX (91 + 10 digit)" maxlength="12" />
+          <div class="err-msg" id="phoneErr"></div>
+          <div class="success-msg" id="phoneSuccess"></div>
+          <button class="save-btn" onclick="savePhone()">✅ Number Save Karo</button>
+          <div style="font-size:.75rem;color:var(--muted);margin-top:10px">⚠️ Note: customer.html mein bhi number update karo</div>
+        </div>
+
+        <div class="settings-card">
+          <h3 style="color:var(--red)">🗑️ Saare Orders Delete Karo</h3>
+          <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px">Yeh action undo nahi ho sakta</p>
+          <button class="save-btn" style="background:var(--red)" onclick="clearAllOrders()">🗑️ Saare Orders Delete Karo</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+let currentFilter = 'all';
+let currentSection = 'orders';
+
+// ===== HELPER =====
+function getCredentials(){ return JSON.parse(localStorage.getItem('diesel_admin_creds')||'null'); }
+function saveCredentials(id,pw){ localStorage.setItem('diesel_admin_creds',JSON.stringify({id,pw})); }
+function getOrders(){ return JSON.parse(localStorage.getItem('diesel_orders')||'[]'); }
+function saveOrders(o){ localStorage.setItem('diesel_orders',JSON.stringify(o)); }
+function getOwnerPhone(){ return localStorage.getItem('diesel_owner_phone')||'919876543210'; }
+
+// ===== SCREENS =====
+function showScreen(name){
+  ['setupScreen','loginScreen','forgotScreen'].forEach(s=>document.getElementById(s).classList.remove('active'));
+  document.getElementById(name).classList.add('active');
+  document.getElementById('adminWrap').style.display='none';
+}
+function showLogin(){ document.getElementById('loginErr').style.display='none'; showScreen('loginScreen'); }
+function showForgot(){ document.getElementById('forgotErr').style.display='none'; showScreen('forgotScreen'); }
+function showAdmin(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('adminWrap').style.display='block';
+  localStorage.setItem('diesel_new_count','0');
+  renderOrders();
+  startAutoRefresh();
+}
+
+// ===== SETUP =====
+function doSetup(){
+  const id=document.getElementById('setupId').value.trim();
+  const pw=document.getElementById('setupPw').value;
+  const pw2=document.getElementById('setupPw2').value;
+  const err=document.getElementById('setupErr');
+  err.style.display='none';
+  if(!id||id.length<3){err.textContent='❗ User ID kam se kam 3 characters ka hona chahiye';err.style.display='block';return;}
+  if(!pw||pw.length<4){err.textContent='❗ Password kam se kam 4 characters ka hona chahiye';err.style.display='block';return;}
+  if(pw!==pw2){err.textContent='❗ Dono password match nahi kar rahe!';err.style.display='block';return;}
+  saveCredentials(id,pw);
+  const s=document.getElementById('loginSuccess');s.textContent='✅ Account ban gaya! Ab login karo';s.style.display='block';
+  showLogin();
+}
+
+// ===== LOGIN =====
+function doLogin(){
+  const id=document.getElementById('loginId').value.trim();
+  const pw=document.getElementById('loginPw').value;
+  const creds=getCredentials();
+  const err=document.getElementById('loginErr');
+  err.style.display='none';
+  if(!creds){alert('Pehle account banao!');showScreen('setupScreen');return;}
+  if(id===creds.id && pw===creds.pw){
+    localStorage.setItem('diesel_admin_auth','1');
+    document.getElementById('loginSuccess').style.display='none';
+    showAdmin();
+  } else {
+    err.style.display='block';
+    document.getElementById('loginPw').value='';
+  }
+}
+
+// ===== FORGOT / RESET =====
+function doReset(){
+  const id=document.getElementById('forgotId').value.trim();
+  const pw=document.getElementById('newPw').value;
+  const pw2=document.getElementById('newPw2').value;
+  const creds=getCredentials();
+  const err=document.getElementById('forgotErr');
+  err.style.display='none';
+  if(!creds){alert('Koi account nahi mila. Pehle setup karo.');showScreen('setupScreen');return;}
+  if(id!==creds.id){err.textContent='❗ Yeh User ID sahi nahi hai!';err.style.display='block';return;}
+  if(!pw||pw.length<4){err.textContent='❗ Password kam se kam 4 characters ka hona chahiye';err.style.display='block';return;}
+  if(pw!==pw2){err.textContent='❗ Dono password match nahi kar rahe!';err.style.display='block';return;}
+  saveCredentials(id,pw);
+  const s=document.getElementById('loginSuccess');s.textContent='✅ Password reset ho gaya! Ab login karo';s.style.display='block';
+  showLogin();
+}
+
+// ===== LOGOUT =====
+function doLogout(){ localStorage.removeItem('diesel_admin_auth'); showLogin(); }
+
+// ===== AUTO-LOGIN CHECK =====
+window.onload=function(){
+  const creds=getCredentials();
+  if(!creds){ showScreen('setupScreen'); return; }
+  if(localStorage.getItem('diesel_admin_auth')==='1'){ showAdmin(); return; }
+  showLogin();
+  // Pre-fill owner phone in settings
+  document.getElementById('ownerPhoneInput').value = getOwnerPhone();
+};
+
+// ===== SETTINGS =====
+function changeId(){
+  const newId=document.getElementById('newIdInput').value.trim();
+  const err=document.getElementById('idErr'),suc=document.getElementById('idSuccess');
+  err.style.display='none';suc.style.display='none';
+  if(!newId||newId.length<3){err.textContent='❗ User ID kam se kam 3 characters ka hona chahiye';err.style.display='block';return;}
+  const creds=getCredentials();
+  saveCredentials(newId,creds.pw);
+  suc.textContent='✅ User ID update ho gaya: '+newId;suc.style.display='block';
+  document.getElementById('newIdInput').value='';
+}
+function changePw(){
+  const old=document.getElementById('oldPwInput').value;
+  const np=document.getElementById('newPwInput').value;
+  const np2=document.getElementById('newPw2Input').value;
+  const err=document.getElementById('pwErr'),suc=document.getElementById('pwSuccess');
+  err.style.display='none';suc.style.display='none';
+  const creds=getCredentials();
+  if(old!==creds.pw){err.textContent='❗ Purana password galat hai!';err.style.display='block';return;}
+  if(!np||np.length<4){err.textContent='❗ Naya password kam se kam 4 characters ka hona chahiye';err.style.display='block';return;}
+  if(np!==np2){err.textContent='❗ Dono password match nahi kar rahe!';err.style.display='block';return;}
+  saveCredentials(creds.id,np);
+  suc.textContent='✅ Password update ho gaya!';suc.style.display='block';
+  ['oldPwInput','newPwInput','newPw2Input'].forEach(id=>document.getElementById(id).value='');
+}
+function savePhone(){
+  const ph=document.getElementById('ownerPhoneInput').value.trim();
+  const err=document.getElementById('phoneErr'),suc=document.getElementById('phoneSuccess');
+  err.style.display='none';suc.style.display='none';
+  if(!ph||ph.length<11){err.textContent='❗ Sahi number daalo (91XXXXXXXXXX)';err.style.display='block';return;}
+  localStorage.setItem('diesel_owner_phone',ph);
+  suc.textContent='✅ Number save ho gaya!';suc.style.display='block';
+}
+function clearAllOrders(){
+  if(confirm('Pakka? Saare orders delete ho jayenge! Yeh undo nahi hoga.')){
+    localStorage.removeItem('diesel_orders');
+    localStorage.removeItem('diesel_new_count');
+    renderOrders();
+    alert('✅ Saare orders delete ho gaye!');
+  }
+}
+
+// ===== SECTIONS =====
+function showSec(name,btn){
+  ['orders','today','delivered','stats','settings'].forEach(s=>document.getElementById('sec-'+s).style.display=s===name?'':'none');
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentSection=name;
+  if(name==='orders')renderOrders();
+  if(name==='today')renderToday();
+  if(name==='delivered')renderDelivered();
+  if(name==='stats')renderStats();
+  if(name==='settings'){
+    document.getElementById('ownerPhoneInput').value=getOwnerPhone();
+    const c=getCredentials();
+    if(c)document.getElementById('newIdInput').placeholder='Current: '+c.id;
+  }
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+// ===== STATUS =====
+function updateStatus(id,status){
+  const orders=getOrders();
+  const idx=orders.findIndex(o=>o.id===id);
+  if(idx===-1)return;
+  orders[idx].status=status;
+  saveOrders(orders);
+  renderOrders();
+}
+function setFilter(f,el){
+  currentFilter=f;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderOrders();
+}
+
+// ===== RENDER =====
+function renderOrders(){
+  let orders=getOrders();
+  const q=(document.getElementById('searchBox')?.value||'').toLowerCase();
+  const pending=orders.filter(o=>o.status==='pending').length;
+  const delivered=orders.filter(o=>o.status==='delivered').length;
+  const totalLtr=orders.reduce((s,o)=>s+o.liters,0);
+  document.getElementById('stTotal').textContent=orders.length;
+  document.getElementById('stPending').textContent=pending;
+  document.getElementById('stDelivered').textContent=delivered;
+  document.getElementById('stLiters').textContent=totalLtr.toLocaleString('en-IN')+'L';
+  const pb=document.getElementById('pendingBadge');
+  pb.style.display=pending>0?'':'none';pb.textContent=pending;
+  if(currentFilter!=='all')orders=orders.filter(o=>o.status===currentFilter);
+  if(q)orders=orders.filter(o=>o.name.toLowerCase().includes(q)||o.company.toLowerCase().includes(q)||o.phone.includes(q)||o.id.toLowerCase().includes(q));
+  document.getElementById('ordersList').innerHTML=orders.length?orders.map(cardHTML).join(''):emptyHTML('Koi order nahi mila');
+}
+function renderToday(){
+  const t=new Date().toISOString().split('T')[0];
+  const orders=getOrders().filter(o=>o.date===t||o.createdAt.startsWith(t));
+  document.getElementById('todayList').innerHTML=orders.length?orders.map(cardHTML).join(''):emptyHTML('Aaj koi order nahi aaya abhi tak');
+}
+function renderDelivered(){
+  const orders=getOrders().filter(o=>o.status==='delivered');
+  document.getElementById('deliveredList').innerHTML=orders.length?orders.map(cardHTML).join(''):emptyHTML('Koi delivered order nahi hai');
+}
+function renderStats(){
+  const orders=getOrders();
+  const totalAmt=orders.filter(o=>o.status!=='cancelled').reduce((s,o)=>s+o.amount,0);
+  const totalLtr=orders.filter(o=>o.status!=='cancelled').reduce((s,o)=>s+o.liters,0);
+  const by={pending:0,confirmed:0,delivered:0,cancelled:0};
+  orders.forEach(o=>by[o.status]=(by[o.status]||0)+1);
+  document.getElementById('statsContent').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+      <div class="stat-card or"><div class="stat-val" style="color:var(--primary)">₹${totalAmt.toLocaleString('en-IN',{minimumFractionDigits:2})}</div><div class="stat-lbl">💵 Cash Revenue (Approx.)</div></div>
+      <div class="stat-card bl"><div class="stat-val" style="color:var(--blue)">${totalLtr.toLocaleString('en-IN')}L</div><div class="stat-lbl">⛽ Total Diesel</div></div>
+    </div>
+    <div style="background:white;border-radius:14px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,.07)">
+      <div style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;margin-bottom:14px">Status Breakdown</div>
+      ${Object.entries(by).map(([s,c])=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)"><span style="font-weight:600">${statusLabel(s)}</span><span style="font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;color:var(--primary)">${c}</span></div>`).join('')}
+    </div>`;
+}
+
+function cardHTML(o){
+  const dt=new Date(o.createdAt).toLocaleString('hi-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+  const dd=new Date(o.date).toLocaleDateString('hi-IN',{day:'2-digit',month:'short',year:'numeric'});
+  const phone=getOwnerPhone();
+  const msg=`⛽ *Singh Diesel Pump*\n\nNamaste ${o.name} ji! 🙏\n\nAapka order *${o.id}* confirm ho gaya hai.\n\n⛽ Quantity: ${o.liters} Liter\n💰 Amount: *₹${o.amount.toLocaleString('en-IN',{minimumFractionDigits:2})}*\n💵 Payment: CASH (delivery pe)\n📅 Delivery: ${o.date}\n🕐 Slot: ${o.slot}\n\nTime pe pahunch jayenge!\n\n_Singh Diesel Pump, Ludhiana_`;
+  const waUrl=`https://wa.me/91${o.phone}?text=${encodeURIComponent(msg)}`;
+  return `
+  <div class="ocard ${o.status}">
+    <div class="ocard-head">
+      <div><span class="onum">⛽ ${o.id}</span><div class="otime">📥 ${dt}</div></div>
+      <span class="sbadge ${o.status}">${statusLabel(o.status)}</span>
+    </div>
+    <div class="ocard-body">
+      <div class="ofield"><div class="flbl">👤 Customer</div><div class="fval">${o.name}</div></div>
+      <div class="ofield"><div class="flbl">📱 Phone</div><div class="fval">${o.phone}</div></div>
+      <div class="ofield big"><div class="flbl">⛽ Quantity</div><div class="fval">${o.liters} L</div></div>
+      <div class="ofield"><div class="flbl">🏭 Company</div><div class="fval">${o.company}</div></div>
+      <div class="ofield"><div class="flbl">💰 Amount</div><div class="fval">₹${o.amount.toLocaleString('en-IN',{minimumFractionDigits:2})} <span class="cash-tag">CASH</span></div></div>
+      <div class="ofield"><div class="flbl">📅 Delivery</div><div class="fval">${dd} · ${o.slot}</div></div>
+      <div class="ofield full"><div class="flbl">📍 Address</div><div class="fval">${o.address}</div></div>
+      ${o.note?`<div class="ofield full"><div class="flbl">📝 Note</div><div class="fval">${o.note}</div></div>`:''}
+    </div>
+    <div class="ocard-foot">
+      ${o.status==='pending'?`<button class="abtn abtn-confirm" onclick="updateStatus('${o.id}','confirmed')">✅ Confirm</button>`:''}
+      ${o.status==='confirmed'?`<button class="abtn abtn-deliver" onclick="updateStatus('${o.id}','delivered')">🚚 Delivered</button>`:''}
+      ${o.status!=='delivered'&&o.status!=='cancelled'?`<button class="abtn abtn-cancel" onclick="if(confirm('Cancel karna chahte ho?'))updateStatus('${o.id}','cancelled')">❌ Cancel</button>`:''}
+      <a class="abtn abtn-wa" href="${waUrl}" target="_blank">💬 WhatsApp</a>
+      <a class="abtn abtn-call" href="tel:${o.phone}">📞 Call</a>
+      ${o.mapLink?`<a class="abtn abtn-map" href="${o.mapLink}" target="_blank">🗺️ Map</a>`:''}
+    </div>
+  </div>`;
+}
+function emptyHTML(m){return `<div class="empty"><div class="eicon">📋</div><p>${m}</p></div>`;}
+function statusLabel(s){return{pending:'⏳ Pending',confirmed:'✅ Confirmed',delivered:'🚚 Delivered',cancelled:'❌ Cancelled'}[s]||s;}
+function startAutoRefresh(){setInterval(()=>{if(currentSection==='orders')renderOrders();if(currentSection==='today')renderToday();},15000);}
+</script>
+</body>
+</html>

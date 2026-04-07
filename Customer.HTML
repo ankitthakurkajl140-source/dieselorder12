@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Singh Diesel Pump — Order Karo</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#e65c00;--primary-dark:#c44f00;--dark:#1a1a1a;--bg:#f5f5f0;--white:#fff;--border:#ddd;--success:#1a7a3a;--success-bg:#eafaf1;--warning:#b45309;--warning-bg:#fef9ec;--text:#2d2d2d;--muted:#666;--yellow:#fbbf24;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Noto Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.site-header{background:linear-gradient(135deg,#1a1a1a,#2d1a00);color:white;}
+.header-top{background:var(--primary);text-align:center;padding:9px;font-size:0.8rem;font-weight:600;}
+.header-main{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;max-width:680px;margin:0 auto;}
+.brand{display:flex;align-items:center;gap:12px;}
+.brand-icon{width:50px;height:50px;background:var(--primary);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 4px 12px rgba(230,92,0,.4);}
+.brand-name{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;line-height:1.1;}
+.brand-name small{display:block;font-size:.7rem;font-weight:400;opacity:.7;font-family:'Noto Sans',sans-serif;}
+.header-info{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:8px 14px;font-size:.75rem;text-align:right;line-height:1.7;}
+.header-info strong{color:var(--yellow);}
+.cash-banner{background:linear-gradient(135deg,#14532d,#166534);color:white;text-align:center;padding:12px 20px;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:.88rem;flex-wrap:wrap;}
+.cash-banner span{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:99px;padding:4px 14px;font-size:.78rem;}
+.main{max-width:680px;margin:0 auto;padding:22px 18px 60px;}
+.info-bar{display:flex;gap:12px;flex-wrap:wrap;background:var(--dark);border-radius:12px;padding:14px 18px;margin-bottom:20px;}
+.info-item{display:flex;align-items:center;gap:7px;font-size:.8rem;color:#ccc;}
+.info-item strong{color:var(--yellow);}
+.form-card{background:var(--white);border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.1);}
+.form-head{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;padding:22px 28px;}
+.form-head h2{font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:700;margin-bottom:4px;}
+.form-head p{font-size:.82rem;opacity:.85;}
+.form-body{padding:24px;}
+.form-row{margin-bottom:20px;}
+.form-row label{display:block;font-weight:700;font-size:.87rem;color:var(--dark);margin-bottom:7px;}
+.req{color:var(--primary);}
+.opt{color:var(--muted);font-weight:400;font-size:.74rem;}
+.form-row input,.form-row textarea{width:100%;padding:12px 15px;border:2px solid var(--border);border-radius:10px;font-family:'Noto Sans',sans-serif;font-size:.95rem;color:var(--text);background:#fafafa;outline:none;transition:border-color .2s,box-shadow .2s;}
+.form-row input:focus,.form-row textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(230,92,0,.12);background:white;}
+.form-row textarea{resize:vertical;min-height:75px;}
+.hint{font-size:.74rem;color:var(--muted);margin-top:5px;}
+.liter-chips{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:11px;}
+.lchip{padding:11px 6px;border:2px solid var(--border);border-radius:10px;background:#fafafa;font-weight:700;font-size:.88rem;cursor:pointer;text-align:center;transition:all .18s;color:var(--text);}
+.lchip:hover{border-color:var(--primary);color:var(--primary);background:#fff5ef;}
+.lchip.sel{border-color:var(--primary);background:var(--primary);color:white;box-shadow:0 4px 12px rgba(230,92,0,.3);}
+.liter-display{background:linear-gradient(135deg,#1a1a1a,#2d2d2d);color:var(--yellow);border-radius:10px;padding:14px 20px;text-align:center;margin-bottom:16px;}
+.liter-display .bignum{font-family:'Baloo 2',cursive;font-size:2.4rem;font-weight:800;line-height:1;}
+.liter-display .bignum span{font-size:1.1rem;opacity:.7;}
+.liter-display small{font-size:.73rem;opacity:.6;display:block;margin-top:2px;}
+.price-box{background:var(--warning-bg);border:1.5px solid #fcd34d;border-radius:10px;padding:13px 17px;margin-bottom:16px;display:none;}
+.price-top{display:flex;justify-content:space-between;align-items:center;}
+.plabel{font-size:.82rem;color:var(--warning);font-weight:700;}
+.pamount{font-family:'Baloo 2',cursive;font-size:1.35rem;font-weight:800;color:var(--warning);}
+.price-breakdown{margin-top:10px;padding-top:10px;border-top:1px dashed #fcd34d;font-size:.78rem;color:var(--warning);}
+.prow{display:flex;justify-content:space-between;margin-bottom:3px;}
+.cash-note{background:#dcfce7;border:1.5px solid #86efac;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px;font-size:.85rem;color:#14532d;font-weight:700;}
+/* MAP */
+.map-section{background:#f0f9ff;border:2px dashed #7dd3fc;border-radius:12px;padding:16px;}
+.map-title{font-weight:700;font-size:.87rem;color:#0369a1;margin-bottom:6px;display:flex;align-items:center;gap:7px;}
+.map-sub{font-size:.76rem;color:#0284c7;margin-bottom:12px;}
+.map-btn{display:inline-flex;align-items:center;gap:8px;background:#0ea5e9;color:white;border:none;border-radius:9px;padding:10px 18px;font-family:'Noto Sans',sans-serif;font-size:.83rem;font-weight:700;cursor:pointer;transition:all .2s;margin-bottom:10px;}
+.map-btn:hover{background:#0284c7;}
+.map-link-input{width:100%;padding:10px 13px;border:2px solid #7dd3fc;border-radius:9px;font-family:'Noto Sans',sans-serif;font-size:.82rem;background:white;outline:none;color:var(--text);}
+.map-link-input:focus{border-color:#0ea5e9;}
+.map-preview{background:#dbeafe;border-radius:8px;padding:10px 13px;margin-top:8px;font-size:.78rem;color:#1d4ed8;display:none;word-break:break-all;}
+/* SLOTS */
+.slot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.slot-chip{padding:9px 5px;border:2px solid var(--border);border-radius:8px;background:#fafafa;font-size:.77rem;font-weight:600;cursor:pointer;text-align:center;transition:all .18s;}
+.slot-chip:hover{border-color:var(--primary);color:var(--primary);}
+.slot-chip.sel{border-color:var(--primary);background:var(--primary);color:white;}
+.submit-btn{width:100%;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;border:none;border-radius:12px;padding:16px;font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s;box-shadow:0 6px 20px rgba(230,92,0,.35);margin-top:8px;}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(230,92,0,.4);}
+/* SUCCESS */
+.success-screen{display:none;background:var(--white);border-radius:18px;padding:42px 24px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.1);}
+.success-screen.show{display:block;}
+.sicon{width:88px;height:88px;background:var(--success-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.7rem;margin:0 auto 18px;animation:popIn .5s cubic-bezier(.34,1.56,.64,1);}
+@keyframes popIn{from{transform:scale(0)}to{transform:scale(1)}}
+.success-screen h2{font-family:'Baloo 2',cursive;font-size:1.5rem;color:var(--success);margin-bottom:7px;}
+.success-screen p{color:var(--muted);font-size:.87rem;margin-bottom:5px;}
+.oid-box{display:inline-block;background:var(--dark);color:var(--yellow);font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;padding:10px 28px;border-radius:10px;margin:14px 0;letter-spacing:.1em;}
+.sdetails{background:var(--bg);border-radius:12px;padding:15px 18px;margin:16px 0;text-align:left;}
+.srow{display:flex;justify-content:space-between;padding:6px 0;font-size:.84rem;border-bottom:1px dashed var(--border);}
+.srow:last-child{border:none;}
+.srow strong{color:var(--dark);}
+.srow span{color:var(--muted);text-align:right;max-width:65%;}
+.cash-confirm{background:#dcfce7;border:1.5px solid #86efac;border-radius:10px;padding:12px 16px;margin:12px 0;font-size:.84rem;color:#14532d;font-weight:700;display:flex;align-items:center;gap:8px;}
+.wa-btn{display:inline-flex;align-items:center;gap:9px;background:#25d366;color:white;border:none;border-radius:12px;padding:13px 24px;font-family:'Baloo 2',cursive;font-size:.92rem;font-weight:700;cursor:pointer;text-decoration:none;margin:7px 5px;box-shadow:0 4px 14px rgba(37,211,102,.3);transition:all .2s;}
+.wa-btn:hover{transform:translateY(-2px);}
+.new-btn{display:inline-flex;align-items:center;gap:8px;background:var(--bg);color:var(--dark);border:2px solid var(--border);border-radius:12px;padding:11px 20px;font-family:'Baloo 2',cursive;font-size:.88rem;font-weight:700;cursor:pointer;margin:7px 5px;transition:all .2s;}
+.new-btn:hover{border-color:var(--primary);color:var(--primary);}
+@media(max-width:500px){.liter-chips{grid-template-columns:repeat(3,1fr);}.slot-grid{grid-template-columns:repeat(2,1fr);}.header-info{display:none;}.form-body{padding:18px;}}
+</style>
+</head>
+<body>
+<div class="site-header">
+  <div class="header-top">⛽ Online Order Karo — Bina Phone Call Ke! Fast & Easy</div>
+  <div class="header-main">
+    <div class="brand">
+      <div class="brand-icon">⛽</div>
+      <div class="brand-name">Singh Diesel Pump<small>📍 Ludhiana, Punjab</small></div>
+    </div>
+    <div class="header-info"><strong>⏰ 8 AM – 8 PM</strong><br>Daily Delivery Available</div>
+  </div>
+</div>
+
+<div class="cash-banner">
+  💵 Sirf CASH Payment Accepted &nbsp;
+  <span>💳 No UPI · No Card · No Credit</span>
+  &nbsp; Delivery ke waqt cash ready rakhein
+</div>
+
+<div class="main">
+  <div class="info-bar">
+    <div class="info-item">⛽ <strong>₹88.10</strong>/Liter</div>
+    <div class="info-item">📦 <strong>Min:</strong> 100L</div>
+    <div class="info-item">⏱️ <strong>Same Day</strong> Delivery</div>
+    <div class="info-item">💵 <strong>Cash Only</strong></div>
+  </div>
+
+  <div class="form-card" id="formCard">
+    <div class="form-head">
+      <h2>⛽ Diesel Order Form</h2>
+      <p>Apni details bharo — hum aapke factory pe deliver karenge</p>
+    </div>
+    <div class="form-body">
+
+      <div class="form-row">
+        <label>👤 Aapka Naam <span class="req">*</span></label>
+        <input type="text" id="custName" placeholder="Jaise: Gurpreet Singh" />
+      </div>
+      <div class="form-row">
+        <label>📱 Mobile Number <span class="req">*</span></label>
+        <input type="tel" id="custPhone" placeholder="10 digit number" maxlength="10" />
+        <div class="hint">Order confirm hone par aapko WhatsApp message aayega</div>
+      </div>
+      <div class="form-row">
+        <label>🏭 Factory / Company Ka Naam <span class="req">*</span></label>
+        <input type="text" id="custCompany" placeholder="Jaise: Gupta Steel Works" />
+      </div>
+      <div class="form-row">
+        <label>📍 Delivery Address <span class="req">*</span></label>
+        <textarea id="custAddress" placeholder="Puri address likhho — gali, mohalla, near landmark..."></textarea>
+      </div>
+
+      <!-- GOOGLE MAPS OPTIONAL -->
+      <div class="form-row">
+        <label>🗺️ Google Map Location <span class="opt">(Optional — karo ya chhod do, dono chalega)</span></label>
+        <div class="map-section">
+          <div class="map-title">📍 Apni exact location share karo (zaroori nahi)</div>
+          <div class="map-sub">Isse delivery easy hogi — lekin address likha ho to kaafi hai</div>
+          <button class="map-btn" onclick="getMyLocation()">📍 Meri Current Location Share Karo</button>
+          <div style="font-size:.75rem;color:#0369a1;margin-bottom:10px">— Ya Google Maps se link copy karke paste karo —</div>
+          <input class="map-link-input" type="url" id="mapLink" placeholder="https://maps.google.com/... (Optional hai)" oninput="previewMapLink()" />
+          <div class="map-preview" id="mapPreview"></div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>⛽ Kitna Liter Diesel Chahiye? <span class="req">*</span></label>
+        <div class="liter-chips">
+          <div class="lchip" onclick="pickLiter(100,this)">100 L</div>
+          <div class="lchip" onclick="pickLiter(200,this)">200 L</div>
+          <div class="lchip" onclick="pickLiter(300,this)">300 L</div>
+          <div class="lchip" onclick="pickLiter(500,this)">500 L</div>
+          <div class="lchip" onclick="pickLiter(700,this)">700 L</div>
+          <div class="lchip" onclick="pickLiter(1000,this)">1000 L</div>
+          <div class="lchip" onclick="pickLiter(1500,this)">1500 L</div>
+          <div class="lchip" onclick="pickLiter(2000,this)">2000 L</div>
+        </div>
+        <input type="number" id="customLtr" placeholder="Ya yahan apni quantity likhho (100–5000)" min="100" max="5000" style="margin-top:4px" oninput="pickCustom()" />
+        <div class="hint">Minimum 100 liter · Maximum 5000 liter</div>
+      </div>
+
+      <div class="liter-display">
+        <div class="bignum" id="ltrDisplay">0 <span>Liter</span></div>
+        <small>Selected Quantity · Rate: ₹88.10/Liter</small>
+      </div>
+
+      <div class="price-box" id="priceBox">
+        <div class="price-top">
+          <div class="plabel">💰 Total Amount (Cash)</div>
+          <div class="pamount" id="priceAmt">₹0</div>
+        </div>
+        <div class="price-breakdown" id="priceBreakdown"></div>
+      </div>
+
+      <div class="cash-note">💵 Payment sirf CASH mein hogi — delivery ke time cash tayar rakhein</div>
+
+      <div class="form-row">
+        <label>📅 Delivery Date <span class="req">*</span></label>
+        <input type="date" id="delivDate" />
+      </div>
+      <div class="form-row">
+        <label>🕐 Delivery Time Slot <span class="req">*</span></label>
+        <div class="slot-grid">
+          <div class="slot-chip" onclick="pickSlot('8AM–10AM',this)">8AM–10AM</div>
+          <div class="slot-chip" onclick="pickSlot('10AM–12PM',this)">10AM–12PM</div>
+          <div class="slot-chip" onclick="pickSlot('12PM–2PM',this)">12PM–2PM</div>
+          <div class="slot-chip" onclick="pickSlot('2PM–4PM',this)">2PM–4PM</div>
+          <div class="slot-chip" onclick="pickSlot('4PM–6PM',this)">4PM–6PM</div>
+          <div class="slot-chip" onclick="pickSlot('6PM–8PM',this)">6PM–8PM</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>📝 Koi Special Note? <span class="opt">(Optional)</span></label>
+        <textarea id="custNote" placeholder="Jaise: Gate pe aana, security ko bolo..." style="min-height:60px"></textarea>
+      </div>
+
+      <button class="submit-btn" onclick="placeOrder()">⛽ Order Submit Karo</button>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success-screen" id="successScreen">
+    <div class="sicon">✅</div>
+    <h2>Order Ho Gaya!</h2>
+    <p>Aapka diesel order submit ho gaya hai</p>
+    <p>Pump owner ko notification bhej di gayi hai</p>
+    <div class="oid-box" id="sOrderId">ORD-0000</div>
+    <div class="cash-confirm">💵 Payment: CASH ONLY — Delivery ke waqt cash tayar rakhein</div>
+    <div class="sdetails" id="sDetails"></div>
+    <div>
+      <a class="wa-btn" id="waLink" href="#" target="_blank">💬 WhatsApp pe Confirm Karo</a>
+      <button class="new-btn" onclick="resetForm()">+ Naya Order</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const OWNER_PHONE = '919876543210'; // <-- Apna number yahan daalo
+const RATE = 88.10;
+let liters = 0, slot = '';
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('delivDate').min = today;
+document.getElementById('delivDate').value = today;
+
+function pickLiter(v,el){document.querySelectorAll('.lchip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');document.getElementById('customLtr').value='';liters=v;refreshUI();}
+function pickCustom(){document.querySelectorAll('.lchip').forEach(c=>c.classList.remove('sel'));liters=parseInt(document.getElementById('customLtr').value)||0;refreshUI();}
+function refreshUI(){
+  document.getElementById('ltrDisplay').innerHTML=liters>0?`${liters} <span>Liter</span>`:`0 <span>Liter</span>`;
+  const pb=document.getElementById('priceBox');
+  if(liters>0){
+    pb.style.display='block';
+    const total=(liters*RATE).toFixed(2);
+    document.getElementById('priceAmt').textContent='₹'+parseFloat(total).toLocaleString('en-IN',{minimumFractionDigits:2});
+    document.getElementById('priceBreakdown').innerHTML=`<div class="prow"><span>${liters}L × ₹${RATE}</span><span>₹${total}</span></div><div class="prow" style="font-weight:700;margin-top:4px"><span>💵 Cash Amount</span><span>₹${parseFloat(total).toLocaleString('en-IN',{minimumFractionDigits:2})}</span></div>`;
+  }else pb.style.display='none';
+}
+function pickSlot(v,el){document.querySelectorAll('.slot-chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');slot=v;}
+function getMyLocation(){
+  if(!navigator.geolocation){alert('Browser location support nahi karta');return;}
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const lat=pos.coords.latitude.toFixed(6),lng=pos.coords.longitude.toFixed(6);
+    const link=`https://maps.google.com/?q=${lat},${lng}`;
+    document.getElementById('mapLink').value=link;
+    const p=document.getElementById('mapPreview');p.style.display='block';p.textContent=`✅ Location mil gayi! Coordinates: ${lat}, ${lng}`;
+  },()=>alert('Location nahi mili. Address manually likhein — koi baat nahi!'));
+}
+function previewMapLink(){
+  const val=document.getElementById('mapLink').value.trim();
+  const p=document.getElementById('mapPreview');
+  if(val.includes('google')||val.includes('goo.gl')||val.includes('maps')){p.style.display='block';p.textContent='✅ Google Maps link add ho gayi!';}
+  else if(val.length>5){p.style.display='block';p.textContent='⚠️ Sahi Google Maps link paste karo';}
+  else p.style.display='none';
+}
+function placeOrder(){
+  const name=document.getElementById('custName').value.trim();
+  const phone=document.getElementById('custPhone').value.trim();
+  const company=document.getElementById('custCompany').value.trim();
+  const address=document.getElementById('custAddress').value.trim();
+  const date=document.getElementById('delivDate').value;
+  const note=document.getElementById('custNote').value.trim();
+  const mapLink=document.getElementById('mapLink').value.trim();
+  if(!name)return alert('❗ Naam bharna zaroori hai!');
+  if(!phone||phone.length!==10)return alert('❗ Sahi 10-digit mobile number daalo!');
+  if(!company)return alert('❗ Factory/Company naam bharo!');
+  if(!address)return alert('❗ Delivery address bharo!');
+  if(!liters||liters<100)return alert('❗ Kam se kam 100 liter select karo!');
+  if(liters>5000)return alert('❗ Maximum 5000 liter allowed hai!');
+  if(!date)return alert('❗ Delivery date bharo!');
+  if(!slot)return alert('❗ Time slot choose karo!');
+  const id='ORD-'+Date.now().toString().slice(-5);
+  const amount=parseFloat((liters*RATE).toFixed(2));
+  const order={id,name,phone,company,address,mapLink:mapLink||'',liters,amount,date,slot,note,payment:'CASH',status:'pending',createdAt:new Date().toISOString()};
+  const orders=JSON.parse(localStorage.getItem('diesel_orders')||'[]');
+  orders.unshift(order);
+  localStorage.setItem('diesel_orders',JSON.stringify(orders));
+  localStorage.setItem('diesel_new_count',String((parseInt(localStorage.getItem('diesel_new_count')||'0'))+1));
+  showSuccess(order);
+}
+function showSuccess(o){
+  document.getElementById('formCard').style.display='none';
+  document.getElementById('successScreen').classList.add('show');
+  document.getElementById('sOrderId').textContent=o.id;
+  const dStr=new Date(o.date).toLocaleDateString('hi-IN',{day:'2-digit',month:'long',year:'numeric'});
+  document.getElementById('sDetails').innerHTML=`
+    <div class="srow"><strong>👤 Naam</strong><span>${o.name}</span></div>
+    <div class="srow"><strong>🏭 Company</strong><span>${o.company}</span></div>
+    <div class="srow"><strong>⛽ Diesel</strong><span>${o.liters} Liter</span></div>
+    <div class="srow"><strong>💰 Amount</strong><span>₹${o.amount.toLocaleString('en-IN',{minimumFractionDigits:2})}</span></div>
+    <div class="srow"><strong>💵 Payment</strong><span>CASH (Delivery pe)</span></div>
+    <div class="srow"><strong>📅 Delivery</strong><span>${dStr}</span></div>
+    <div class="srow"><strong>🕐 Slot</strong><span>${o.slot}</span></div>
+    ${o.mapLink?`<div class="srow"><strong>🗺️ Map</strong><span><a href="${o.mapLink}" target="_blank" style="color:#0ea5e9">Location Dekho</a></span></div>`:''}`;
+  const msg=`⛽ *NAYA DIESEL ORDER* ⛽\n\n🆔 Order: ${o.id}\n👤 Customer: ${o.name}\n📱 Phone: ${o.phone}\n🏭 Company: ${o.company}\n📍 Address: ${o.address}\n${o.mapLink?`🗺️ Map: ${o.mapLink}\n`:''}⛽ Quantity: *${o.liters} Liter*\n💰 Amount: *₹${o.amount.toLocaleString('en-IN',{minimumFractionDigits:2})}*\n💵 Payment: *CASH*\n📅 Date: ${o.date}\n🕐 Slot: ${o.slot}\n${o.note?`📝 Note: ${o.note}\n`:''}\n✅ Please confirm!`;
+  const url=`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(msg)}`;
+  document.getElementById('waLink').href=url;
+  setTimeout(()=>window.open(url,'_blank'),700);
+}
+function resetForm(){
+  document.getElementById('successScreen').classList.remove('show');
+  document.getElementById('formCard').style.display='';
+  ['custName','custPhone','custCompany','custAddress','custNote','customLtr','mapLink'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('mapPreview').style.display='none';
+  document.querySelectorAll('.lchip,.slot-chip').forEach(c=>c.classList.remove('sel'));
+  liters=0;slot='';refreshUI();
+  document.getElementById('delivDate').value=today;
+}
+</script>
+</body>
+</html>
